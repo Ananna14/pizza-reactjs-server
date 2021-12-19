@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 app.use(cors());
 app.use(express.json())
 
@@ -38,6 +38,14 @@ async function run() {
     const sweet = await cursor.toArray();
     res.send(sweet);
   })
+  //SINGLE SWEET PRODUCT
+  app.get("/singleSweet/:id", async(req, res)=>{
+    console.log(req.params.id)
+    const sweet = await sweetCollection.find({_id: ObjectId(req.params.id)}).toArray();
+    console.log(sweet);
+    // res.send(sweet[0])
+  })
+
   //   //POST sweet
    app.post('/sweets', async(req, res)=>{
      const sweet = req.body;
@@ -45,7 +53,21 @@ async function run() {
      const result = await sweetCollection.insertOne(sweet);
      console.log(result)
      res.json(result)
+     //Single product load
+     
    })
+   //singleProduct PIZZA
+   app.get("/singleProduct/:id", async(req, res)=>{
+     console.log(req.params.id)
+     const result = await serviceCollection.find({_id: ObjectId(req.params.id)}).toArray();
+     res.send(result[0])
+   })
+   app.get("/singleProduct/:id", async(req, res)=>{
+     console.log(req.params.id)
+     const result = await sweetCollection.find({_id: ObjectId(req.params.id)}).toArray();
+     res.send(result[0])
+   })
+   
 
   } finally {
     // await client.close();
